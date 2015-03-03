@@ -1,4 +1,4 @@
-# plot1.R
+# plot2.R
 # Reads power consumption data and creates a histogram
 # Load package 'dplyr' so we can use filter() function
 require(dplyr)
@@ -15,9 +15,17 @@ power$Date <- as.Date(power$Date, format = "%d/%m/%Y")
 # Filter for only the dates we want
 pf <- filter(power, Date == "2007-02-01" | Date == "2007-02-02")
 
+# Build the histogram
+pf_hist <- hist(power$Global_active_power, nclass = 12, plot = FALSE)
+
 # Create the png file
 png("plot1.png")
-plot(hf_hist, col = "Red", main = "Global Active Power", 
+plot(pf_hist, col = "Red", main = "Global Active Power", 
      xlab = "Global Active Power (kilowatts)", 
      ylab = "Frequency")
 dev.off()
+
+# Print output to console
+plot(pf_hist, col = "Red", main = "Global Active Power", 
+     xlab = "Global Active Power (kilowatts)", 
+     ylab = "Frequency")
