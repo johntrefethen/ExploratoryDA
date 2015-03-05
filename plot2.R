@@ -8,7 +8,8 @@ require(dplyr)
 # working directory.
 power <- read.table("household_power_consumption.txt", 
                      header = TRUE, sep = ";", na.strings = "?", 
-                     colClasses = c("Global_active_power" = "numeric"))
+                     colClasses = c("Global_active_power" = "numeric"
+                                    ))
 
 # Change Date column to an r date class
 power$Date <- as.Date(power$Date, format = "%d/%m/%Y")
