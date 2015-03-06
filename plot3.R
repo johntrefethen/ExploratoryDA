@@ -30,25 +30,36 @@ timedt <- as.POSIXct(paste(pf$Date, pf$Time))
 # Create the png file - open device
 png("plot3.png")
 
-# Create the plot - blank with no lines
-plot(timedt, pf$Sub_metering_1, type="n")
-
+plot(timedt, pf$Sub_metering_1, type="n", ylab = "Energy sub metering", 
+     xlab = " ")
 # Add the lines
-lines(timedt, pf$Sub_metering_2, col = "red")
 lines(timedt, pf$Sub_metering_1)
+lines(timedt, pf$Sub_metering_2, col = "red")
 lines(timedt, pf$Sub_metering_3, col = "blue")
+
+#Add the legend
+# legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), pch = "-")
+legend("topright", 
+       c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
+       lty=c(1,1), 
+       lwd=c(1,1),
+       col=c("black","blue","red"))
 
 # Close the device
 dev.off()
 
 # Print output to console
-plot(timedt, pf$Sub_metering_1, type="n", ylab = "Engergy sub metering", 
+plot(timedt, pf$Sub_metering_1, type="n", ylab = "Energy sub metering", 
      xlab = " ")
-
 # Add the lines
-lines(timedt, pf$Sub_metering_2, col = "red")
 lines(timedt, pf$Sub_metering_1)
+lines(timedt, pf$Sub_metering_2, col = "red")
 lines(timedt, pf$Sub_metering_3, col = "blue")
 
 #Add the legend
-legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), pch = "-", fill = c("black", "red", "blue"))
+# legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), pch = "-")
+legend("topright", 
+       c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
+       lty=c(1,1), 
+       lwd=c(1,1),
+       col=c("black","blue","red"))
