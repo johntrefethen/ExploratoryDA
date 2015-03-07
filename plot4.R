@@ -1,5 +1,11 @@
-# plot3.R
-# Reads power consumption data and creates a histogram
+# plot4.R
+# Reads power consumption data and creates a .png file with four graphs
+# Graph 1 - Global Active Power by Date/Time
+# Graph 2 - Voltage by Date/Time
+# Graph 3 - Energy sub metering by Date/Time
+# Graph 4 - Global Reacitve Power by Date/Time
+# The code assumes that the household_power_consumption.txt file is in the
+# Local working directory.
 # Load package 'dplyr' so we can use filter() function
 require(dplyr)
 
@@ -56,7 +62,8 @@ legend("topright",
        c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
        lty=c(1,1), 
        lwd=c(1,1),
-       col=c("black","blue","red"))
+       col=c("black","blue","red"),
+       bty = "n")
 
 # Add Plot 4
 plot(timedt, pf$Global_reactive_power, type = "l", 
@@ -90,7 +97,8 @@ legend("topright",
        c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
        lty=c(1,1), 
        lwd=c(1,1),
-       col=c("black","blue","red"))
+       col=c("black","blue","red"),
+       bty = "n")
 
 # Add Plot 4
 plot(timedt, pf$Global_reactive_power, type = "l", 
