@@ -1,65 +1,34 @@
-# plot3.R
-# Reads power consumption data and creates a histogram
-# Load package 'dplyr' so we can use filter() function
-require(dplyr)
+# File Name: plot2.R
+# Input: summarySCC_PM25.rds (data file)
+# Program assumes the data file is in the working directory
+# Output: .png file showing a plot of Total PM2.5 Emissions for Baltimore City
 
-# Read the primary data file
-# Assumes user has unzipped the source file to their
-# working directory.
-power <- read.table("household_power_consumption.txt", 
-                     header = TRUE, sep = ";", na.strings = "?", 
-                     colClasses = c("Date" = "character", 
-                                    "Time" = "character",
-                                    "Global_active_power" = "numeric",
-                                    "Global_reactive_power" = "numeric",
-                                    "Voltage" = "numeric",
-                                    "Global_intensity" = "numeric",
-                                    "Sub_metering_1" = "numeric",
-                                    "Sub_metering_2" = "numeric",
-                                    "Sub_metering_3" = "numeric"))
+# Read file - don't need source_class file for plot1.
+NEI <- readRDS("summarySCC_PM25.rds")
 
-# Change Date column to an r date class
-power$Date <- as.Date(power$Date, format = "%d/%m/%Y")
+# Pull only Baltimore City fips data
+balt_city <- NEI[NEI$fips == "24510",]
 
-# Filter for only the dates we want
-pf <- filter(power, Date == "2007-02-01" | Date == "2007-02-02")
+# Split NEI on emissions by year
+emissions_by_year <- with(balt_city, split(Emissions, year))
 
-# Combine Date and Time into a single value
-timedt <- as.POSIXct(paste(pf$Date, pf$Time))
+# Sum emissions for each year
+sum_by_year <- lapply(emissions_by_year, sum)
 
-# Create the png file - open device
-png("plot3.png")
+# Open device to create .png file
+png("plot2.png")
 
-plot(timedt, pf$Sub_metering_1, type="n", ylab = "Energy sub metering", 
-     xlab = " ")
-# Add the lines
-lines(timedt, pf$Sub_metering_1)
-lines(timedt, pf$Sub_metering_2, col = "red")
-lines(timedt, pf$Sub_metering_3, col = "blue")
+# Plot the values - total emission by year
+# Hide x-axis labels so we can customize later to show 1999
+plot(names(sum_by_year), sum_by_year, 
+     ylab = "Total PM2.5 Emissions (tons)", 
+     xlab = "Year",
+     main = "PM2.5 Emissions by Year - Baltimore City",
+     type = "b",
+     xaxt = "n")
 
-#Add the legend
-# legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), pch = "-")
-legend("topright", 
-       c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
-       lty=c(1,1), 
-       lwd=c(1,1),
-       col=c("black","blue","red"))
+# Add custom x-axis labels to show 1999 plus other years
+axis(1, at=names(sum_by_year), labels=names(sum_by_year))
 
-# Close the device
+# Close device
 dev.off()
-
-# Print output to console
-plot(timedt, pf$Sub_metering_1, type="n", ylab = "Energy sub metering", 
-     xlab = " ")
-# Add the lines
-lines(timedt, pf$Sub_metering_1)
-lines(timedt, pf$Sub_metering_2, col = "red")
-lines(timedt, pf$Sub_metering_3, col = "blue")
-
-#Add the legend
-# legend("topright", legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), pch = "-")
-legend("topright", 
-       c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), 
-       lty=c(1,1), 
-       lwd=c(1,1),
-       col=c("black","blue","red"))

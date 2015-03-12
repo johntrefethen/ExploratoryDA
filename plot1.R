@@ -1,45 +1,31 @@
-# plot1.R
-# Reads power consumption data and creates a .png file with a histogram
-# of Global Active Power by Date/Time
-## The code assumes that the household_power_consumption.txt file is in the
-# Local working directory.
-# Load package 'dplyr' so we can use filter() function
-require(dplyr)
+# File Name: plot1.R
+# Input: summarySCC_PM25.rds (data file)
+# Program assumes the data file is in the working directory
+# Output: .png file showing a plot of Total PM2.5 Emissions for available years
 
-# Read the primary data file
-power <- read.table("household_power_consumption.txt", 
-                    header = TRUE, sep = ";", na.strings = "?", 
-                    colClasses = c("Date" = "character", 
-                                   "Time" = "character",
-                                   "Global_active_power" = "numeric",
-                                   "Global_reactive_power" = "numeric",
-                                   "Voltage" = "numeric",
-                                   "Global_intensity" = "numeric",
-                                   "Sub_metering_1" = "numeric",
-                                   "Sub_metering_2" = "numeric",
-                                   "Sub_metering_3" = "numeric"))
+# Read file - don't need source_class file for plot1.
+NEI <- readRDS("summarySCC_PM25.rds")
 
-# Change Date column to an r date class
-power$Date <- as.Date(power$Date, format = "%d/%m/%Y")
+# Split NEI on emissions by year
+emissions_by_year <- with(NEI, split(Emissions, year))
 
-# Filter for only the dates we want
-pf <- filter(power, Date == "2007-02-01" | Date == "2007-02-02")
+# Sum emissions for each year
+sum_by_year <- lapply(emissions_by_year, sum)
 
-# Build the histogram
-pf_hist <- hist(pf$Global_active_power, nclass = 12, plot = FALSE)
-
-# Create the png file by opening a device and plotting the histogram
+# Open device to create .png file
 png("plot1.png")
 
-# Plot
-plot(pf_hist, col = "Red", main = "Global Active Power", 
-     ylab = "Global Active Power (kilowatts)", 
-     xlab = "Frequency")
+# Plot the values - total emission by year
+# Hide x-axis labels so we can customize later to show 1999
+plot(names(sum_by_year), sum_by_year, 
+     ylab = "Total PM2.5 Emissions (tons)", 
+     xlab = "Year",
+     main = "PM2.5 Emissions by Year",
+     type = "b",
+     xaxt = "n")
 
-# Close the device
+# Add custom x-axis labels to show 1999 plus other years
+axis(1, at=names(sum_by_year), labels=names(sum_by_year))
+
+# Close device
 dev.off()
-
-# Print output to console for review - for testing purposes only
-# plot(pf_hist, col = "Red", main = "Global Active Power", 
-#    xlab = "Global Active Power (kilowatts)", 
-#     ylab = "Frequency")
