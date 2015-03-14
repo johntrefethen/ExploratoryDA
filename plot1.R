@@ -4,7 +4,12 @@
 # Output: .png file showing a plot of Total PM2.5 Emissions for available years
 
 # Read file - don't need source_class file for plot1.
-NEI <- readRDS("summarySCC_PM25.rds")
+# Check that it is in the working directory first
+if(file.exists("summarySCC_PM25.rds")) {
+    NEI <- readRDS("summarySCC_PM25.rds") 
+} else {
+    stop("No file exists")
+}
 
 # Split NEI on emissions by year
 emissions_by_year <- with(NEI, split(Emissions, year))
@@ -20,7 +25,7 @@ png("plot1.png")
 plot(names(sum_by_year), sum_by_year, 
      ylab = "Total PM2.5 Emissions (tons)", 
      xlab = "Year",
-     main = "PM2.5 Emissions by Year",
+     main = "PM2.5 Emissions by Year - United States",
      type = "b",
      xaxt = "n")
 
